@@ -90,14 +90,18 @@ void setHiddenMessage(PWINDIVERT_IPHDR ip_header, PWINDIVERT_TCPHDR tcp_header) 
 	static UINT16 id_difference = 0; //difference between actual and changed ip.id. This ensures 2 packets won't have the same id
 
 	if (bit_num == 8) {
-		if(!message.is_open()) message.open("antygona.txt", std::ios::in | std::ios::binary);
-
+		if (!message.is_open()) message.open("antygona.txt", std::ios::in | std::ios::binary);
 		message.read(&byte, 1);
 		bit_num = 0;
 
 		if (message.eof()) { //loop writing hidden message from file
 			message.close();
 			message.open("antygona.txt", std::ios::in | std::ios::binary);
+		}
+
+		if (!message.is_open) {
+			std::cerr << "Couldn't open file" << std::endl;
+			exit(EXIT_FAILURE);
 		}
 	}
 	
