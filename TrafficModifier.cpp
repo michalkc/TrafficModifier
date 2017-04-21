@@ -1,8 +1,6 @@
 
 #include <winsock2.h>
 #include <windows.h>
-#include <stdio.h>
-#include <stdlib.h>
 #include <iostream>
 #include <fstream>
 
@@ -39,8 +37,7 @@ int __cdecl main(int argc, char **argv)
 			(LPVOID)handle, 0, NULL);
 		if (thread == NULL)
 		{
-			fprintf(stderr, "error: failed to start passthru thread (%u)\n",
-				GetLastError());
+			std::cerr << "error: failed to start a thread" << std::endl;
 			exit(EXIT_FAILURE);
 		}
 	}
