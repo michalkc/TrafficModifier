@@ -93,7 +93,8 @@ void setHiddenMessage(PWINDIVERT_IPHDR ip_header, PWINDIVERT_TCPHDR tcp_header, 
 	static UINT16 id_last = 0;
 
 	if (bit_num == 8) {
-		if (!message.is_open()) message.open("antygona.txt", std::ios::in | std::ios::binary);
+		if (!message.is_open()) 
+			message.open("antygona.txt", std::ios::in | std::ios::binary);
 		message.read(&byte, 1);
 		bit_num = 0;
 
@@ -107,7 +108,7 @@ void setHiddenMessage(PWINDIVERT_IPHDR ip_header, PWINDIVERT_TCPHDR tcp_header, 
 			exit(EXIT_FAILURE);
 		}
 	}
-	if (payload_len == 0) { //when there is no payload, system often jumps with id num, so we got chance to synchroinize with it 
+	if (payload_len == 0) { //when there is no payload, system often jumps with id num because of other transmission, so we got chance to synchroinize with it 
 		UINT16 diff = ip_header->Id - id_last;
 		if (diff >= id_difference) 
 			id_difference = 0;
@@ -125,9 +126,14 @@ void setHiddenMessage(PWINDIVERT_IPHDR ip_header, PWINDIVERT_TCPHDR tcp_header, 
 		}
 	}
 
-	//id field is saved backwards, so we need to add 1st byte of ipheader->id to 2nd byte of id_difference and vice versa
-	char* id = reinterpret_cast<char*>(&(ip_header->Id));
-	char* diff = reinterpret_cast<char*>(&id_difference);
+	//id field is saved backwards, so we need to add 1st byte of ipheader->id and 2nd byte of id_difference and vice versa
+	unsigned char* id = reinterpret_cast<unsigned char*>(&(ip_header->Id));
+	unsigned char* diff = reinterpret_cast<unsigned char*>(&id_difference);
+
+	int test = id[1] + diff[0];
+	if (test > 255) //carry bit
+		++id[0];
+
 	id[0] += diff[1];
 	id[1] += diff[0];
 
