@@ -35,3 +35,7 @@
 /WinDivert.lib
 /WinDivert32.sys
 /windivert.h
+/Debug
+/Release
+/*.sys
+/x64/Debug
