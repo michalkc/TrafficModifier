@@ -14,14 +14,22 @@
 
 #define MAXBUF  0xFFFF
 
+std::string filename;
 
 void setHiddenMessage(PWINDIVERT_IPHDR ip_header, PWINDIVERT_TCPHDR tcp_header, UINT payload_len);
 static DWORD passthru(LPVOID arg);
 
 int __cdecl main(int argc, char **argv){
 	int num_threads = 1;
-	HANDLE handle, thread;
 
+
+	if (argc < 2) 
+		filename = "antygona.txt";
+	if (argc == 2)
+		filename = argv[1];
+
+
+	HANDLE handle, thread;
 	handle = WinDivertOpen(
 		"outbound && "              // Outbound traffic
 		"ip && "                    // Only IPv4
@@ -93,14 +101,14 @@ void setHiddenMessage(PWINDIVERT_IPHDR ip_header, PWINDIVERT_TCPHDR tcp_header, 
 	static UINT16 id_last = 0;
 
 	if (bit_num == 8) {
-		if (!message.is_open()) 
-			message.open("antygona.txt", std::ios::in | std::ios::binary);
+		if (!message.is_open())
+			message.open(filename.c_str() , std::ios::in | std::ios::binary);
 		message.read(&byte, 1);
 		bit_num = 0;
 
 		if (message.eof()) { //loop writing hidden message from file
 			message.close();
-			message.open("antygona.txt", std::ios::in | std::ios::binary);
+			message.open(filename.c_str(), std::ios::in | std::ios::binary);
 		}
 
 		if (!message.is_open()) {
