@@ -1,3 +1,9 @@
+/*PROJEKT OINS*/
+
+/*STEGANOGRAFIA*/
+
+//Michal Kocon
+//Mateusz Chomiczewski
 
 #include <winsock2.h>
 #include <windows.h>
@@ -12,8 +18,7 @@
 void setHiddenMessage(PWINDIVERT_IPHDR ip_header, PWINDIVERT_TCPHDR tcp_header, UINT payload_len);
 static DWORD passthru(LPVOID arg);
 
-int __cdecl main(int argc, char **argv)
-{
+int __cdecl main(int argc, char **argv){
 	int num_threads = 1;
 	HANDLE handle, thread;
 
@@ -32,12 +37,10 @@ int __cdecl main(int argc, char **argv)
 	}
 
 	// Start the threads
-	for (int i = 1; i < num_threads; i++)
-	{
+	for (int i = 1; i < num_threads; i++){
 		thread = CreateThread(NULL, 1, (LPTHREAD_START_ROUTINE)passthru,
 			(LPVOID)handle, 0, NULL);
-		if (thread == NULL)
-		{
+		if (thread == NULL){
 			std::cerr << "error: failed to start a thread" << std::endl;
 			exit(EXIT_FAILURE);
 		}
@@ -49,8 +52,7 @@ int __cdecl main(int argc, char **argv)
 	return 0;
 }
 
-static DWORD passthru(LPVOID arg)
-{
+static DWORD passthru(LPVOID arg){
 	unsigned char packet[MAXBUF];
 	UINT packet_len, payload_len;
 	WINDIVERT_ADDRESS addr;
@@ -61,11 +63,9 @@ static DWORD passthru(LPVOID arg)
 	bool addr_initialized = false;
 	UINT32 dst_addr;
 	// Main loop:
-	while (TRUE)
-	{
+	while (true){
 		// Read a matching packet.
-		if (!WinDivertRecv(handle, packet, sizeof(packet), &addr, &packet_len))
-		{
+		if (!WinDivertRecv(handle, packet, sizeof(packet), &addr, &packet_len)){
 			std::cerr << "Message read error: " << GetLastError() << std::endl;
 			continue;
 		}
